@@ -1,11 +1,20 @@
 ﻿@using MvcNetCoreSession.Helpers
+@using MvcNetCoreSession.Extensions;
 @{
-    byte[] data = Context.Session.Get("MASCOTA");
-    Mascota mascota = null;
-    if(Context.Session.Get("MASCOTA") != null){
-        mascota = HelperBinarySession.ByteToObject(data) as Mascota;
-    }
 
+    // byte[] data = Context.Session.Get("MASCOTA");
+    // Mascota mascota1 = null;
+    // if(Context.Session.Get("MASCOTA") != null){
+    //     mascota = HelperBinarySession.ByteToObject(data) as Mascota;
+    // }
+
+    // string data = Context.Session.GetString("MASCOTA");
+    Mascota mascota = null;
+    // if (Context.Session.GetString("MASCOTA") != null)
+    // {
+    //     mascota = HelperJsonSession.DeserealizeObject<Mascota>(data);
+    // }
+    mascota = Context.Session.GetObject<Mascota>("MASCOTAOBJECT");
 }
 
 <h1>Ejemplos Session</h1>
@@ -40,6 +49,24 @@
         <a asp-controller="EjemploSession"
            asp-action="SessionCollector">
             Session Collector
+        </a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="EjemploSession"
+           asp-action="SessionMascotaJson">
+            Session Mascota Json
+        </a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="EjemploSession"
+           asp-action="SessionMascotaObject">
+            Session Mascota Object
+        </a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="EjemploSession"
+           asp-action="SessionMascotaCollection">
+            Session Masctoa Collection
         </a>
     </li>
 </ul>

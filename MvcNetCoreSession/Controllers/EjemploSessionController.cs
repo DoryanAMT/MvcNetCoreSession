@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MvcNetCoreSession.Extensions;
 using MvcNetCoreSession.Helpers;
 using MvcNetCoreSession.Models;
 using System.Security.Cryptography.X509Certificates;
@@ -10,6 +11,78 @@ namespace MvcNetCoreSession.Controllers
 
         public IActionResult Index()
         {
+            return View();
+        }
+        public IActionResult SessionMascotaCollection
+            (string accion)
+        {
+            if (accion != null)
+            {
+                if (accion.ToLower() == "almacenar")
+                {
+                    List<Mascota> mascotas = new List<Mascota>()
+                    {
+                        new Mascota {Nombre ="Patricio", Raza="Estrella", Edad=4},
+                        new Mascota {Nombre ="Apu", Raza="Monito", Edad=10},
+                        new Mascota {Nombre ="Donald", Raza="Pato", Edad=50},
+                        new Mascota {Nombre ="Pluto", Raza="Perroo", Edad=60},
+                    };
+                    HttpContext.Session.SetObject("MASCOTAS", mascotas);
+                    ViewData["MENSAJE"] = "Coleccion Mascotas almacenada";
+                }else if (accion.ToLower() == "mostrar")
+                {
+                    List<Mascota> mascotas = HttpContext.Session.GetObject<List<Mascota>>("MASCOTAS");
+                    return View(mascotas);
+                }
+            }
+            return View();
+        }
+        public IActionResult SessionMascotaObject
+            (string accion)
+        {
+            if (accion != null)
+            {
+                if (accion.ToLower() == "almacenar")
+                {
+                    Mascota mascota = new Mascota
+                    {
+                        Nombre = "Olaf", Raza ="Muñeco", Edad = 19
+                    };
+                    HttpContext.Session.SetObject("MASCOTAOBJECT", mascota);
+                    ViewData["MENSAJE"] = "Mascota como Object almacenada";
+                }else if (accion.ToLower() == "mostrar")
+                {
+                    Mascota mascota = HttpContext.Session.GetObject<Mascota>("MASCOTAOBJECT");
+                    ViewData["MASCOTA"] = mascota; 
+                }
+            }
+            return View();
+        }
+
+        public IActionResult SessionMascotaJson(string accion)
+        {
+            if (accion != null)
+            {
+                if (accion.ToLower() == "almacenar" )
+                {
+                    Mascota mascota = new Mascota
+                    {
+                        Nombre = "Simba", Raza = "Leon", Edad = 9
+                    };
+                    //  UTILIZAMOS EL HELPER PARA CONVERTIR EL OBJETO A string
+                    string jsonMascota = HelperJsonSession.SerializerObject<Mascota>(mascota);
+                    //  ALMACENAMOS EN SESSION EL STRING
+                    HttpContext.Session.SetString("MASCOTA", jsonMascota);
+                    ViewData["MENSAJE"] = "Mascota JSON almacenada";
+                }else if (accion.ToLower() == "mostrar")
+                {
+                    //  RECUPERAMOS EL STRING JSON DE MASCOTA
+                    string json = HttpContext.Session.GetString("MASCOTA");
+                    //  CONVERTIMOS STRING A MASCOTA
+                    Mascota mascota = HelperJsonSession.DeserealizeObject<Mascota>(json);
+                    ViewData["MASCOTA"] = mascota;
+                }
+            }
             return View();
         }
         public IActionResult SessionCollector
